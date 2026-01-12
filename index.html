@@ -1,103 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>DevOps Interview Preparation</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevOps Interview Preparation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <!-- INBUILT CSS -->
-    <style>
     body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: radial-gradient(circle at top, #0f2027, #000);
-        color: #ffffff;
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+      color: #ffffff;
+      padding: 40px 20px;
+      overflow-x: hidden;
     }
 
     h1 {
-        text-align: center;
-        padding: 20px;
-        color: #00f5ff;
-        text-shadow: 0 0 12px #00f5ff;
+      text-align: center;
+      padding: 30px 20px;
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #00f5ff, #00ff9c, #00f5ff);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+      letter-spacing: 2px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
     }
 
     .container {
-        width: 85%;
-        margin: auto;
-        padding-bottom: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
     }
 
     .card {
-        margin-bottom: 16px;
-        border-radius: 14px;
-        border: 1px solid #00f5ff;
-        box-shadow: 0 0 18px rgba(0, 245, 255, 0.4);
-        background: rgba(0, 255, 255, 0.08);
-        overflow: hidden;
-        transition: all 0.3s ease;
+      position: relative;
+      margin-bottom: 24px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(0, 245, 255, 0.2);
+      overflow: visible;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      backdrop-filter: blur(10px);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #00f5ff, #00ff9c, #00f5ff);
+      opacity: 0;
+      z-index: -1;
+      transition: opacity 0.4s ease;
+    }
+
+    .card:hover::before {
+      opacity: 0.3;
+      animation: borderPulse 2s ease-in-out infinite;
+    }
+
+    .card.active::before {
+      opacity: 0.6;
+    }
+
+    @keyframes borderPulse {
+      0%, 100% { opacity: 0.3; filter: blur(4px); }
+      50% { opacity: 0.5; filter: blur(8px); }
     }
 
     .card-header {
-        padding: 16px;
-        font-size: 18px;
-        font-weight: bold;
-        color: #000;
-        background: linear-gradient(90deg, #00f5ff, #00ff9c);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        cursor: pointer;
-        user-select: none;
+      padding: 24px 28px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #0a0a0f;
+      background: linear-gradient(135deg, #00f5ff 0%, #00ff9c 100%);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 20px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    .card-header:hover {
-        box-shadow: inset 0 0 12px #ffffff;
+    .card-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .card-header:hover::before {
+      left: 100%;
+    }
+
+    .card.active .card-header {
+      border-radius: 20px 20px 0 0;
+      box-shadow: 0 8px 32px rgba(0, 245, 255, 0.4);
+    }
+
+    .toggle-icon {
+      width: 12px;
+      height: 12px;
+      border-style: solid;
+      border-width: 0 3px 3px 0;
+      border-color: #0a0a0f;
+      display: inline-block;
+      transform: rotate(45deg);
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      flex-shrink: 0;
+    }
+
+    .card.active .toggle-icon {
+      transform: rotate(-135deg);
     }
 
     .card-body {
-        display: none;
-        padding: 16px;
-        background-color: rgba(0, 0, 0, 0.6);
-        transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 0;
+      overflow: hidden;
+      background: linear-gradient(180deg, rgba(0, 245, 255, 0.08) 0%, rgba(0, 0, 0, 0.4) 100%);
+      border-radius: 0 0 20px 20px;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                  padding 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  opacity 0.3s ease;
+      opacity: 0;
+    }
+
+    .card.active .card-body {
+      max-height: 2000px;
+      padding: 24px 28px;
+      opacity: 1;
+    }
+
+    .card-body p {
+      margin-bottom: 16px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .card-body h4 {
+      margin: 20px 0 12px;
+      color: #00f5ff;
+      font-size: 1.1rem;
+      text-shadow: 0 0 10px rgba(0, 245, 255, 0.3);
     }
 
     .card-body ul {
-        padding-left: 20px;
+      padding-left: 24px;
+      list-style: none;
+      margin-bottom: 16px;
     }
 
     .card-body li {
-        margin-bottom: 8px;
+      margin-bottom: 12px;
+      position: relative;
+      padding-left: 20px;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: all 0.3s ease;
+      line-height: 1.6;
+    }
+
+    .card.active .card-body li {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .card.active .card-body li:nth-child(1) { transition-delay: 0.1s; }
+    .card.active .card-body li:nth-child(2) { transition-delay: 0.15s; }
+    .card.active .card-body li:nth-child(3) { transition-delay: 0.2s; }
+    .card.active .card-body li:nth-child(4) { transition-delay: 0.25s; }
+    .card.active .card-body li:nth-child(5) { transition-delay: 0.3s; }
+    .card.active .card-body li:nth-child(6) { transition-delay: 0.35s; }
+    .card.active .card-body li:nth-child(7) { transition-delay: 0.4s; }
+    .card.active .card-body li:nth-child(8) { transition-delay: 0.45s; }
+
+    .card-body li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: #00f5ff;
+      text-shadow: 0 0 8px #00f5ff;
     }
 
     .highlight {
-        color: #00ff9c;
-        font-weight: bold;
+      color: #00ff9c;
+      font-weight: 600;
+      text-shadow: 0 0 10px rgba(0, 255, 156, 0.5);
+      display: block;
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(0, 255, 156, 0.08);
+      border-left: 3px solid #00ff9c;
+      border-radius: 0 8px 8px 0;
     }
 
-    /* Play/Arrow icon */
-    .toggle-icon {
-        width: 16px;
-        height: 16px;
-        border-style: solid;
-        border-width: 0 3px 3px 0;
-        display: inline-block;
-        padding: 3px;
-        transform: rotate(45deg);
-        transition: transform 0.3s ease;
+    /* Particle explosion effect */
+    .particle {
+      position: absolute;
+      pointer-events: none;
+      border-radius: 50%;
+      animation: particleExplode 0.8s ease-out forwards;
     }
 
-    /* Rotate when active */
-    .active .toggle-icon {
-        transform: rotate(135deg);
+    @keyframes particleExplode {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0);
+      }
     }
-</style>
 
+    /* Ripple effect */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 245, 255, 0.6) 0%, transparent 70%);
+      pointer-events: none;
+      animation: rippleEffect 0.6s ease-out forwards;
+    }
+
+    @keyframes rippleEffect {
+      0% {
+        width: 0;
+        height: 0;
+        opacity: 1;
+      }
+      100% {
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+      }
+    }
+
+    /* Glow pulse on click */
+    .card.clicked {
+      animation: clickPulse 0.3s ease-out;
+    }
+
+    @keyframes clickPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+
+    /* Sound toggle button */
+    .sound-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(0, 245, 255, 0.1);
+      border: 1px solid rgba(0, 245, 255, 0.3);
+      color: #00f5ff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      z-index: 100;
+    }
+
+    .sound-toggle:hover {
+      background: rgba(0, 245, 255, 0.2);
+      box-shadow: 0 0 20px rgba(0, 245, 255, 0.4);
+    }
+
+    .sound-toggle.muted {
+      color: #ff4757;
+      border-color: rgba(255, 71, 87, 0.3);
+    }
+
+    strong {
+      color: #00f5ff;
+    }
+
+    em {
+      color: #00ff9c;
+      font-style: italic;
+    }
+  </style>
 </head>
-
 <body>
-
-<h1> DevOps Interview Preparation</h1>
-
-<div class="container">
+  <button class="sound-toggle" id="soundToggle" title="Toggle Sound">🔊</button>
+  
+  <h1>DevOps Interview Preparation</h1>
+  
+  <div class="container">
 
     <!-- DevOps Intro -->
    <div class="card">
@@ -501,17 +716,146 @@
 </div>
 
 
+  <script>
+    // Audio context for generating sounds
+    let audioContext = null;
+    let soundEnabled = true;
 
-
-
-
-<!-- INBUILT JAVASCRIPT -->
-<script>
-    function toggleCard(header) {
-        const body = header.nextElementSibling;
-        body.style.display = (body.style.display === "block") ? "none" : "block";
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      }
     }
-</script>
 
+    // Generate expand sound (ascending tone)
+    function playExpandSound() {
+      if (!soundEnabled) return;
+      initAudio();
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(800, audioContext.currentTime + 0.15);
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    }
+
+    // Generate collapse sound (descending tone)
+    function playCollapseSound() {
+      if (!soundEnabled) return;
+      initAudio();
+      
+      const oscillator = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.15);
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+      
+      oscillator.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.2);
+    }
+
+    // Create particle explosion
+    function createParticles(x, y, container) {
+      const colors = ['#00f5ff', '#00ff9c', '#ffffff', '#00d4ff'];
+      const particleCount = 20;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        const size = Math.random() * 10 + 5;
+        const angle = (Math.PI * 2 * i) / particleCount;
+        const velocity = Math.random() * 100 + 50;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity;
+        
+        particle.style.cssText = `
+          width: ${size}px;
+          height: ${size}px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          left: ${x}px;
+          top: ${y}px;
+          --tx: ${tx}px;
+          --ty: ${ty}px;
+          box-shadow: 0 0 ${size}px ${colors[Math.floor(Math.random() * colors.length)]};
+        `;
+        
+        container.appendChild(particle);
+        
+        setTimeout(() => particle.remove(), 800);
+      }
+    }
+
+    // Create ripple effect
+    function createRipple(x, y, container) {
+      const ripple = document.createElement('div');
+      ripple.className = 'ripple';
+      ripple.style.left = x - 250 + 'px';
+      ripple.style.top = y - 250 + 'px';
+      container.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    // Toggle sound
+    const soundToggle = document.getElementById('soundToggle');
+    soundToggle.addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
+      soundToggle.classList.toggle('muted', !soundEnabled);
+    });
+
+    // Card click handlers
+    document.querySelectorAll('.card').forEach(card => {
+      const header = card.querySelector('.card-header');
+      
+      header.addEventListener('click', (e) => {
+        const rect = header.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Toggle active state
+        const isExpanding = !card.classList.contains('active');
+        
+        // Close other cards
+        document.querySelectorAll('.card.active').forEach(activeCard => {
+          if (activeCard !== card) {
+            activeCard.classList.remove('active');
+          }
+        });
+        
+        card.classList.toggle('active');
+        card.classList.add('clicked');
+        setTimeout(() => card.classList.remove('clicked'), 300);
+        
+        // Create effects
+        createParticles(x, y, header);
+        createRipple(x, y, header);
+        
+        // Play sound
+        if (isExpanding) {
+          playExpandSound();
+        } else {
+          playCollapseSound();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
